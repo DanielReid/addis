@@ -40,8 +40,6 @@ public class StudyArmsEntry implements Comparable<StudyArmsEntry> {
 		d_base    = base;
 		d_subject = subject;
 		checkArms();
-		
-		
 	}
 	
 	private void checkArms() throws IllegalArgumentException {
