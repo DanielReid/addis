@@ -24,37 +24,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.drugis.addis.gui.components;
+package org.drugis.addis.presentation.wizard;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import org.drugis.addis.entities.Study;
+import org.drugis.addis.entities.WhenTaken;
 
-import javax.swing.JPanel;
+public class WhenTakenFactory {
+	public Study study;
 
-import org.drugis.addis.forestplot.ForestPlot;
-import org.drugis.addis.presentation.ForestPlotPresentation;
-
-@SuppressWarnings("serial")
-public class RelativeEffectCanvas extends JPanel {
-	
-	private ForestPlot d_plot;
-
-	public ForestPlot getPlot() {
-		return d_plot;
+	public WhenTakenFactory(Study study) {
+		this.study = study;
 	}
 
-	public RelativeEffectCanvas(ForestPlotPresentation pres) {
-		d_plot = new ForestPlot(pres);
-	}
-	
-	@Override
-	protected void paintComponent(Graphics g) {
-		d_plot.paint((Graphics2D) g);
-	}
-	
-	@Override
-	public Dimension getPreferredSize() {
-		return d_plot.getPlotSize();
+	public WhenTaken buildDefault() {
+		WhenTaken whenTaken = study.defaultMeasurementMoment();
+		if (whenTaken == null) {
+			return null;
+		}
+		whenTaken.commit();
+		return whenTaken;
 	}
 }

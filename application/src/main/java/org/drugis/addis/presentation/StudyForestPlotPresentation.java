@@ -26,48 +26,40 @@
 
 package org.drugis.addis.presentation;
 
+import java.util.Arrays;
 import java.util.List;
 
+import org.drugis.addis.entities.Arm;
 import org.drugis.addis.entities.OutcomeMeasure;
-import org.drugis.addis.entities.relativeeffect.AxisType;
+import org.drugis.addis.entities.StudyArmsEntry;
+import org.drugis.addis.entities.relativeeffect.BasicRelativeEffect;
 import org.drugis.addis.entities.relativeeffect.RelativeEffect;
-import org.drugis.addis.forestplot.BinnedScale;
-import org.drugis.common.Interval;
+import org.drugis.addis.entities.relativeeffect.RelativeEffectFactory;
 
-public interface ForestPlotPresentation {
+public class StudyForestPlotPresentation extends AbstractForestPlotPresentation {
+	private Arm d_baseline;
+	private Arm d_subject;
 
-	public abstract int getNumRelativeEffects();
+	public StudyForestPlotPresentation(OutcomeMeasure om, StudyArmsEntry studyArmsEntry, 
+			Class<? extends RelativeEffect<?>> type) {
+		super(om, Arrays.asList(studyArmsEntry.getStudy()),
+				createRelativeEffect(om, studyArmsEntry, type), null);
+		d_baseline = studyArmsEntry.getBase();
+		d_subject = studyArmsEntry.getSubject();
+	}
 
-	public abstract RelativeEffect<?> getRelativeEffectAt(int i);
+	private static List<BasicRelativeEffect<?>> createRelativeEffect(
+			OutcomeMeasure om, StudyArmsEntry studyArmsEntry,
+			Class<? extends RelativeEffect<?>> type) {
+		final BasicRelativeEffect<?> re = (BasicRelativeEffect<?>)RelativeEffectFactory.buildRelativeEffect(studyArmsEntry, om, type, false);
+		return Arrays.<BasicRelativeEffect<?>>asList(re);
+	}
 
-	public abstract BinnedScale getScale();
+	protected String getBaselineLabel() {
+		return d_baseline.getLabel();
+	}
 
-	public abstract AxisType getScaleType();
-
-	public abstract Interval<Double> getRange();
-
-	public abstract String getLowValueFavors();
-
-	public abstract String getHighValueFavors();
-
-	public abstract String getStudyLabelAt(int i);
-
-	public abstract String getCIlabelAt(int i);
-
-	public abstract List<Integer> getTicks();
-
-	public abstract List<String> getTickVals();
-
-	public abstract int getDiamondSize(int index);
-
-	public abstract OutcomeMeasure getOutcomeMeasure();
-
-	public abstract boolean isPooledRelativeEffect(int i);
-
-	public abstract String getHeterogeneityI2();
-
-	public abstract String getHeterogeneity();
-
-	public abstract boolean hasPooledRelativeEffect();
-
+	protected String getSubjectLabel() {
+		return d_subject.getLabel();
+	}
 }
